@@ -119,16 +119,14 @@
 			}
 		}
 
-		public function change_pass($pass_change, $id)
+		public function change_pass($pass_change, $mail)
 		{
-			$pass_hash = password_ha($pass_change);
+			$pass_hash = $this->password_ha($pass_change);
 			$pdo = $this->pdo;
-			$sql = $pdo->prepare("UPDATE user SET PASS = ? WHERE ID = ?");
-			if ($sql->execute(["$pass_hash"],["$id"])) {
-				$user = $sql->fetchAll();
-				$_SESSION["user"]["pass"] = $user["PASS"];
-				$this->msg = "Change password successfully";
-			}
+			$sql = $pdo->prepare("UPDATE user SET PASS = ? WHERE MAIL = ?");
+			$sql->execute(array("$pass_change", "$mail"));
+			$this->msg = "Change password successfully";
+			$this->print_msg();
 		}
 
 		public function print_msg()
